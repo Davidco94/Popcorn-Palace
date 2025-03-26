@@ -25,6 +25,6 @@ public class Movie {
 
     private String genre;
     private int duration;
-    private String rating;
+    private Double rating;
     private int releaseYear;
 }

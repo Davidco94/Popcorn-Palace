@@ -17,7 +17,7 @@ public class MovieRequest {
     @NotNull(message = "Duration is mandatory")
     private Integer duration;
 
-    private String rating;
+    private Double rating;
 
     @NotNull(message = "Release year is mandatory")
     private Integer releaseYear;

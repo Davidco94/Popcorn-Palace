@@ -31,7 +31,7 @@ class MovieServiceTest {
                 .title("Test Movie")
                 .genre("Drama")
                 .duration(100)
-                .rating("PG")
+                .rating(5.4)
                 .releaseYear(2022)
                 .build();
 
