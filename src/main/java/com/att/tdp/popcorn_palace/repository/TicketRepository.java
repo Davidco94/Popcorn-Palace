@@ -12,4 +12,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
     @Query("SELECT COUNT(t) FROM Ticket t WHERE t.showtime.id = :showtimeId")
     int countBookedSeatsByShowtime(Long showtimeId);
+
+    void deleteByShowtimeId(Long showtimeId);
 }

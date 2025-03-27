@@ -30,12 +30,8 @@ public class TicketService {
             throw new IllegalArgumentException("Seat already booked");
         }
 
-        if (showtime.getAvailableSeats() == 0) {
+        if (showtime.getAvailableSeats() <= 0) {
             throw new IllegalArgumentException("No seats available");
-        }
-
-        if (showtime.getAvailableSeats() < 0) {
-            throw new IllegalArgumentException("Seats Number Illegal");
         }
 
         //if (ticketRepository.countBookedSeatsByShowtime(showtime.getId()) <= 0) {
@@ -59,19 +55,8 @@ public class TicketService {
                 .userId(ticketRequest.getUserId())
                 .build();
         Ticket bookedTicket = ticketRepository.save(ticket);
-        log.info("Ticket booked with ID: {}", bookedTicket.getId());
+        log.info("Ticket booked with ID: {}", bookedTicket.getBookingId());
         return bookedTicket;
     }
 
-    public void cancelTicket(Long ticketId) {
-        Ticket ticket = ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new IllegalArgumentException("Ticket with ID " + ticketId + " not found"));
-
-        Showtime showtime = ticket.getShowtime();
-        showtime.setAvailableSeats(showtime.getAvailableSeats() + 1);
-        showtimeRepository.save(showtime);
-
-        ticketRepository.delete(ticket);
-        log.info("Ticket with ID {} cancelled and seat released", ticketId);
-    }
 }
