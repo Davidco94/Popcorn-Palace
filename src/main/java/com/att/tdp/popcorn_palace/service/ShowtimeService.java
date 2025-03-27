@@ -6,9 +6,11 @@ import com.att.tdp.popcorn_palace.model.Movie;
 import com.att.tdp.popcorn_palace.model.Showtime;
 import com.att.tdp.popcorn_palace.repository.MovieRepository;
 import com.att.tdp.popcorn_palace.repository.ShowtimeRepository;
+import com.att.tdp.popcorn_palace.repository.TicketRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.NoSuchElementException;
@@ -21,11 +23,16 @@ public class ShowtimeService {
 
     private final ShowtimeRepository showtimeRepository;
     private final MovieRepository movieRepository;
+    private final TicketRepository ticketRepository;
 
     public Showtime addShowtime(ShowtimeRequest showtimeRequest) {
         log.info("Adding showtime for theater: {} starting at: {}", showtimeRequest.getTheater(), showtimeRequest.getStartTime());
         Movie movie = movieRepository.findById(showtimeRequest.getMovieId())
                 .orElseThrow(() -> new IllegalArgumentException("Movie with ID " + showtimeRequest.getMovieId() + " not found"));
+        long durationMinutes = Duration.between(showtimeRequest.getStartTime(), showtimeRequest.getEndTime()).toMinutes();
+        if (durationMinutes < movie.getDuration()) {
+            throw new IllegalArgumentException("Showtime duration must be at least as long as the movie duration (" + movie.getDuration() + " minutes)");
+        }
         Showtime showtime = Showtime.builder()
                 .movie(movie)
                 .theater(showtimeRequest.getTheater())
@@ -87,8 +94,10 @@ public class ShowtimeService {
         return updated;
     }
 
-    //לפני מחיקה נמחוק את כל הטיקטיםם שקשורים לID הזה
+    @Transactional
     public void deleteShowtime(Long id) {
+        log.info("Deleting tickets for showtime ID: {}", id);
+        ticketRepository.deleteByShowtimeId(id);
         log.info("Deleting showtime with ID: {}", id);
         showtimeRepository.deleteById(id);
         log.info("Showtime with ID {} deleted", id);

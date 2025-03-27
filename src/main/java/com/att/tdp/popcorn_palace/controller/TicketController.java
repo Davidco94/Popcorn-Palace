@@ -29,11 +29,4 @@ public class TicketController {
         return ResponseEntity.ok(bookedTicket);
     }
 
-    @DeleteMapping("/{ticketId}")
-    @Operation(summary = "Cancel a ticket")
-    public ResponseEntity<String> cancelTicket(@PathVariable Long ticketId) {
-        log.info("Received request to cancel ticket ID: {}", ticketId);
-        ticketService.cancelTicket(ticketId);
-        return ResponseEntity.ok("Ticket deleted successfully");
-    }
 }

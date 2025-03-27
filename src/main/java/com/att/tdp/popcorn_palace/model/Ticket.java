@@ -17,7 +17,7 @@ public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Schema(example = "84438967-f68f-4fa0-b620-0f08217e76af")
-    private UUID id;
+    private UUID bookingId;
 
     @ManyToOne
     @JoinColumn(name = "showtime_id")

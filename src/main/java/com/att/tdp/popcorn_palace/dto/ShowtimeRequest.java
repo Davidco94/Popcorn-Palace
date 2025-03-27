@@ -11,10 +11,10 @@ import java.time.LocalDateTime;
 @Builder
 public class ShowtimeRequest {
     @NotNull
-    private Double price;
+    private Long movieId;
 
     @NotNull
-    private Long movieId;
+    private Double price;
 
     @NotBlank
     private String theater;
@@ -24,8 +24,5 @@ public class ShowtimeRequest {
 
     @NotNull
     private LocalDateTime endTime;
-
-    //@NotNull(message = "Total seats are mandatory")
-    //private Integer totalSeats;
 }
 
