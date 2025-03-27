@@ -47,10 +47,10 @@ public class ShowtimeController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a showtime")
-    public ResponseEntity<Void> deleteShowtime(@PathVariable Long id) {
+    public ResponseEntity<String> deleteShowtime(@PathVariable Long id) {
         log.info("Received request to delete showtime with ID: {}", id);
         showtimeService.deleteShowtime(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Showtime deleted successfully");
     }
 
     @GetMapping("/{id}")
@@ -59,6 +59,6 @@ public class ShowtimeController {
         log.info("Received request to fetch showtime with ID: {}", id);
         return showtimeService.getShowtime(id)
                 .map(ResponseEntity::ok)
-                .orElseThrow(() -> new IllegalArgumentException("Showtime not found with id" + id));
+                .orElseThrow(() -> new IllegalArgumentException("Showtime not found with id " + id));
     }
 }

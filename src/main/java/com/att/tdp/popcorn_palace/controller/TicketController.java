@@ -31,9 +31,9 @@ public class TicketController {
 
     @DeleteMapping("/{ticketId}")
     @Operation(summary = "Cancel a ticket")
-    public ResponseEntity<Void> cancelTicket(@PathVariable Long ticketId) {
+    public ResponseEntity<String> cancelTicket(@PathVariable Long ticketId) {
         log.info("Received request to cancel ticket ID: {}", ticketId);
         ticketService.cancelTicket(ticketId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Ticket deleted successfully");
     }
 }
