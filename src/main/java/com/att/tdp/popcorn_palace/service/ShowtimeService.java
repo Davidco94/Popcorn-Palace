@@ -1,5 +1,6 @@
 package com.att.tdp.popcorn_palace.service;
 
+import com.att.tdp.popcorn_palace.Configuration;
 import com.att.tdp.popcorn_palace.dto.ShowtimeRequest;
 import com.att.tdp.popcorn_palace.model.Movie;
 import com.att.tdp.popcorn_palace.model.Showtime;
@@ -10,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
+import java.util.NoSuchElementException;
+import java.time.Duration;
 
 @Service
 @Slf4j
@@ -29,8 +32,7 @@ public class ShowtimeService {
                 .startTime(showtimeRequest.getStartTime())
                 .endTime(showtimeRequest.getEndTime())
                 .price(showtimeRequest.getPrice())
-                .totalSeats(showtimeRequest.getTotalSeats())
-                .availableSeats(showtimeRequest.getTotalSeats())
+                .availableSeats(Configuration.numberOfSeats)
                 .build();
 
         // Check for overlapping showtimes in the same theater
@@ -46,33 +48,46 @@ public class ShowtimeService {
         return savedShowtime;
     }
 
-    public Optional<Showtime> updateShowtime(Long id, Showtime showtimeDetails) {
+    public Showtime updateShowtime(Long id, ShowtimeRequest showtimeRequest) {
         log.info("Updating showtime with ID: {}", id);
-        return showtimeRepository.findById(id).map(showtime -> {
-            // If theater or time slots change, check for overlaps
-            if (!showtime.getTheater().equals(showtimeDetails.getTheater()) ||
-                    !showtime.getStartTime().equals(showtimeDetails.getStartTime()) ||
-                    !showtime.getEndTime().equals(showtimeDetails.getEndTime())) {
 
-                List<Showtime> overlaps = showtimeRepository.findByTheaterAndStartTimeLessThanAndEndTimeGreaterThan(
-                        showtimeDetails.getTheater(), showtimeDetails.getEndTime(), showtimeDetails.getStartTime());
-                overlaps.removeIf(s -> s.getId().equals(id));
-                if (!overlaps.isEmpty()) {
-                    log.error("Overlapping showtime detected during update for theater: {}", showtimeDetails.getTheater());
-                    throw new IllegalArgumentException("Showtime overlaps with an existing showtime in the same theater");
-                }
+        Showtime existing = showtimeRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Showtime with ID " + id + " not found"));
+
+        Movie movie = movieRepository.findById(showtimeRequest.getMovieId())
+                .orElseThrow(() -> new IllegalArgumentException("Movie with ID " + showtimeRequest.getMovieId() + " not found"));
+
+        long durationMinutes = Duration.between(showtimeRequest.getStartTime(), showtimeRequest.getEndTime()).toMinutes();
+        if (durationMinutes < movie.getDuration()) {
+            throw new IllegalArgumentException("Showtime duration is shorter than movie duration.");
+        }
+
+        if (!existing.getTheater().equals(showtimeRequest.getTheater()) ||
+                !existing.getStartTime().equals(showtimeRequest.getStartTime()) ||
+                !existing.getEndTime().equals(showtimeRequest.getEndTime())) {
+
+            List<Showtime> overlaps = showtimeRepository.findByTheaterAndStartTimeLessThanAndEndTimeGreaterThan(
+                    showtimeRequest.getTheater(), showtimeRequest.getEndTime(), showtimeRequest.getStartTime());
+
+            overlaps.removeIf(s -> s.getId().equals(id)); // Ignore self
+
+            if (!overlaps.isEmpty()) {
+                throw new IllegalArgumentException("Showtime overlaps with another in the same theater.");
             }
-            showtime.setMovie(showtimeDetails.getMovie());
-            showtime.setTheater(showtimeDetails.getTheater());
-            showtime.setStartTime(showtimeDetails.getStartTime());
-            showtime.setEndTime(showtimeDetails.getEndTime());
-            showtime.setPrice(showtimeDetails.getPrice());
-            Showtime updatedShowtime = showtimeRepository.save(showtime);
-            log.info("Showtime updated with ID: {}", updatedShowtime.getId());
-            return updatedShowtime;
-        });
+        }
+        existing.setMovie(movie);
+        existing.setTheater(showtimeRequest.getTheater());
+        existing.setStartTime(showtimeRequest.getStartTime());
+        existing.setEndTime(showtimeRequest.getEndTime());
+        existing.setPrice(showtimeRequest.getPrice());
+        existing.setAvailableSeats(Configuration.numberOfSeats);
+
+        Showtime updated = showtimeRepository.save(existing);
+        log.info("Showtime updated with ID: {}", updated.getId());
+        return updated;
     }
 
+    //לפני מחיקה נמחוק את כל הטיקטיםם שקשורים לID הזה
     public void deleteShowtime(Long id) {
         log.info("Deleting showtime with ID: {}", id);
         showtimeRepository.deleteById(id);

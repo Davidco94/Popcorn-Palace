@@ -1,5 +1,6 @@
 package com.att.tdp.popcorn_palace.model;
 
+import com.att.tdp.popcorn_palace.Configuration;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -39,7 +40,9 @@ public class Showtime {
     private Double price;
 
     @Column(nullable = false)
-    private int totalSeats;
+    @Setter(AccessLevel.NONE)
+    //private int totalSeats;
+    private final static int totalSeats = Configuration.numberOfSeats;
 
     @Column(nullable = false)
     private int availableSeats;

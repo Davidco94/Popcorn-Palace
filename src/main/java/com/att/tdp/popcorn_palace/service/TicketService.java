@@ -1,5 +1,6 @@
 package com.att.tdp.popcorn_palace.service;
 
+import com.att.tdp.popcorn_palace.Configuration;
 import com.att.tdp.popcorn_palace.dto.TicketRequest;
 import com.att.tdp.popcorn_palace.model.Movie;
 import com.att.tdp.popcorn_palace.model.Showtime;
@@ -20,7 +21,7 @@ public class TicketService {
 
     private void isSeatValid(TicketRequest ticketRequest, Showtime showtime) {
         int seatNumber = ticketRequest.getSeatNumber();
-        if (seatNumber < 1 || seatNumber > showtime.getTotalSeats()) {
+        if (seatNumber < 1 || seatNumber > Configuration.numberOfSeats) {
             throw new IllegalArgumentException("Invalid seat number");
         }
 
@@ -29,8 +30,12 @@ public class TicketService {
             throw new IllegalArgumentException("Seat already booked");
         }
 
-        if (showtime.getAvailableSeats() <= 0) {
+        if (showtime.getAvailableSeats() == 0) {
             throw new IllegalArgumentException("No seats available");
+        }
+
+        if (showtime.getAvailableSeats() < 0) {
+            throw new IllegalArgumentException("Seats Number Illegal");
         }
 
         //if (ticketRepository.countBookedSeatsByShowtime(showtime.getId()) <= 0) {
@@ -51,6 +56,7 @@ public class TicketService {
         Ticket ticket = Ticket.builder()
                 .showtime(showtime)
                 .seatNumber(ticketRequest.getSeatNumber())
+                .userId(ticketRequest.getUserId())
                 .build();
         Ticket bookedTicket = ticketRepository.save(ticket);
         log.info("Ticket booked with ID: {}", bookedTicket.getId());
