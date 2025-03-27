@@ -25,7 +25,7 @@ public class ShowtimeRequest {
     @NotNull
     private LocalDateTime endTime;
 
-    @NotNull(message = "Total seats are mandatory")
-    private Integer totalSeats;
+    //@NotNull(message = "Total seats are mandatory")
+    //private Integer totalSeats;
 }
 

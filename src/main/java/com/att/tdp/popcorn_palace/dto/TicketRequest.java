@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -17,4 +18,7 @@ public class TicketRequest {
 
     @NotNull(message = "Seat number is mandatory")
     private Integer seatNumber;
+
+    @NotNull(message = "User ID is mandatory")
+    private UUID userId;
 }

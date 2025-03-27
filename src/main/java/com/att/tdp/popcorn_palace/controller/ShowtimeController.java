@@ -32,18 +32,13 @@ public class ShowtimeController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update an existing showtime")
-    public ResponseEntity<Showtime> updateShowtime(@PathVariable Long id, @Validated @RequestBody Showtime showtimeDetails) {
+    public ResponseEntity<Showtime> updateShowtime(@PathVariable Long id, @Validated @RequestBody ShowtimeRequest showtimeDetails) {
         log.info("Received request to update showtime with ID: {}", id);
-        return showtimeService.updateShowtime(id, showtimeDetails)
-            .map(showtime -> {
-                log.info("Showtime with ID {} updated successfully", id);
-                return ResponseEntity.ok(showtime);
-            })
-            .orElseGet(() -> {
-                log.warn("Showtime with ID {} not found", id);
-                return ResponseEntity.notFound().build();
-            });
+        Showtime updatedShowtime = showtimeService.updateShowtime(id, showtimeDetails);
+        log.info("Showtime with ID {} updated successfully", id);
+        return ResponseEntity.ok(updatedShowtime);
     }
+
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a showtime")

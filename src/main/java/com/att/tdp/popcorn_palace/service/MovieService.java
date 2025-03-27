@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
+import java.util.NoSuchElementException;
+
 
 @Service
 @Slf4j
@@ -60,6 +62,9 @@ public class MovieService {
 
     public void deleteMovie(Long id) {
         log.info("Deleting movie with ID: {}", id);
+        if (!movieRepository.existsById(id)) {
+            throw new NoSuchElementException("Movie with ID " + id + " does not exist");
+        }
         movieRepository.deleteById(id);
         log.info("Movie with ID {} deleted", id);
     }
