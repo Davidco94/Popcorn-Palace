@@ -1,6 +1,7 @@
 package com.att.tdp.popcorn_palace.controller;
 
 import com.att.tdp.popcorn_palace.dto.TicketRequest;
+import com.att.tdp.popcorn_palace.dto.TicketResponse;
 import com.att.tdp.popcorn_palace.model.Ticket;
 import com.att.tdp.popcorn_palace.service.TicketService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,10 +23,10 @@ public class TicketController {
 
     @PostMapping
     @Operation(summary = "Book a ticket")
-    public ResponseEntity<Ticket> bookTicket(@Validated @RequestBody TicketRequest ticketRequest) {
+    public ResponseEntity<TicketResponse> bookTicket(@Validated @RequestBody TicketRequest ticketRequest) {
         log.info("Received request to book ticket for showtime ID: {} and seat number: {}",
                 ticketRequest.getShowtimeId(), ticketRequest.getSeatNumber());
-        Ticket bookedTicket = ticketService.bookTicket(ticketRequest);
+        TicketResponse bookedTicket = ticketService.bookTicket(ticketRequest);
         return ResponseEntity.ok(bookedTicket);
     }
 
