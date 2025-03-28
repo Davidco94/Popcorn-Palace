@@ -1,14 +1,12 @@
 package com.att.tdp.popcorn_palace.controller;
 
 import com.att.tdp.popcorn_palace.dto.ShowtimeRequest;
-import com.att.tdp.popcorn_palace.model.Showtime;
+import com.att.tdp.popcorn_palace.dto.ShowtimeResponse;
 import com.att.tdp.popcorn_palace.service.ShowtimeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.ObjectNotFoundException;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -24,17 +22,17 @@ public class ShowtimeController {
 
     @PostMapping
     @Operation(summary = "Add a new showtime")
-    public ResponseEntity<Showtime> addShowtime(@Validated @RequestBody ShowtimeRequest showtimeRequest) {
+    public ResponseEntity<ShowtimeResponse> addShowtime(@Validated @RequestBody ShowtimeRequest showtimeRequest) {
         log.info("Received request to add a showtime for theater: {}", showtimeRequest.getTheater());
-        Showtime savedShowtime = showtimeService.addShowtime(showtimeRequest);
+        ShowtimeResponse savedShowtime = showtimeService.addShowtime(showtimeRequest);
         return ResponseEntity.ok(savedShowtime);
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Update an existing showtime")
-    public ResponseEntity<Showtime> updateShowtime(@PathVariable Long id, @Validated @RequestBody ShowtimeRequest showtimeDetails) {
+    public ResponseEntity<ShowtimeResponse> updateShowtime(@PathVariable Long id, @Validated @RequestBody ShowtimeRequest showtimeDetails) {
         log.info("Received request to update showtime with ID: {}", id);
-        Showtime updatedShowtime = showtimeService.updateShowtime(id, showtimeDetails);
+        ShowtimeResponse updatedShowtime = showtimeService.updateShowtime(id, showtimeDetails);
         log.info("Showtime with ID {} updated successfully", id);
         return ResponseEntity.ok(updatedShowtime);
     }
@@ -50,7 +48,7 @@ public class ShowtimeController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Get a showtime by id")
-    public ResponseEntity<Showtime> getShowtime(@PathVariable Long id) {
+    public ResponseEntity<ShowtimeResponse> getShowtime(@PathVariable Long id) {
         log.info("Received request to fetch showtime with ID: {}", id);
         return showtimeService.getShowtime(id)
                 .map(ResponseEntity::ok)

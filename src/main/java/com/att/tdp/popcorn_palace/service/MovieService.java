@@ -43,21 +43,22 @@ public class MovieService {
         return movieRepository.findAll();
     }
 
-    public Optional<Movie> updateMovie(Long id, Movie movieDetails) {
+    public Movie updateMovie(Long id, Movie movieDetails) {
         log.info("Updating movie with ID: {}", id);
-        return movieRepository.findById(id).map(movie -> {
-            if (!movie.getTitle().equals(movieDetails.getTitle()) && movieRepository.existsByTitle(movieDetails.getTitle())) {
-                throw new IllegalArgumentException("Another movie with this title already exists");
-            }
-            movie.setTitle(movieDetails.getTitle());
-            movie.setGenre(movieDetails.getGenre());
-            movie.setDuration(movieDetails.getDuration());
-            movie.setRating(movieDetails.getRating());
-            movie.setReleaseYear(movieDetails.getReleaseYear());
-            Movie updatedMovie = movieRepository.save(movie);
-            log.info("Movie updated: {}", updatedMovie.getTitle());
-            return updatedMovie;
-        });
+        Movie movie = movieRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Movie with ID " + id + " not found"));
+        if (!movie.getTitle().equals(movieDetails.getTitle()) && movieRepository.existsByTitle(movieDetails.getTitle())) {
+            throw new IllegalArgumentException("Another movie with this title already exists");
+        }
+
+        movie.setTitle(movieDetails.getTitle());
+        movie.setGenre(movieDetails.getGenre());
+        movie.setDuration(movieDetails.getDuration());
+        movie.setRating(movieDetails.getRating());
+        movie.setReleaseYear(movieDetails.getReleaseYear());
+        Movie updatedMovie = movieRepository.save(movie);
+        log.info("Movie updated: {}", updatedMovie.getTitle());
+        return updatedMovie;
     }
 
     public void deleteMovie(Long id) {

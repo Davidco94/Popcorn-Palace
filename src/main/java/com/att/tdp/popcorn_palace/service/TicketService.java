@@ -2,7 +2,7 @@ package com.att.tdp.popcorn_palace.service;
 
 import com.att.tdp.popcorn_palace.Configuration;
 import com.att.tdp.popcorn_palace.dto.TicketRequest;
-import com.att.tdp.popcorn_palace.model.Movie;
+import com.att.tdp.popcorn_palace.dto.TicketResponse;
 import com.att.tdp.popcorn_palace.model.Showtime;
 import com.att.tdp.popcorn_palace.model.Ticket;
 import com.att.tdp.popcorn_palace.repository.ShowtimeRepository;
@@ -22,7 +22,7 @@ public class TicketService {
     private void isSeatValid(TicketRequest ticketRequest, Showtime showtime) {
         int seatNumber = ticketRequest.getSeatNumber();
         if (seatNumber < 1 || seatNumber > Configuration.numberOfSeats) {
-            throw new IllegalArgumentException("Invalid seat number");
+            throw new IllegalArgumentException("Seat number must be between 1 and " + Configuration.numberOfSeats);
         }
 
         boolean seatTaken = ticketRepository.existsByShowtimeAndSeatNumber(showtime, seatNumber);
@@ -34,12 +34,9 @@ public class TicketService {
             throw new IllegalArgumentException("No seats available");
         }
 
-        //if (ticketRepository.countBookedSeatsByShowtime(showtime.getId()) <= 0) {
-        //    throw new IllegalArgumentException("No seats available");
-        //}
     }
 
-    public Ticket bookTicket(TicketRequest ticketRequest) {
+    public TicketResponse bookTicket(TicketRequest ticketRequest) {
         log.info("Booking ticket for showtime ID: {} and seat number: {}",
                 ticketRequest.getShowtimeId(), ticketRequest.getSeatNumber());
         Showtime showtime = showtimeRepository.findById(ticketRequest.getShowtimeId())
@@ -56,7 +53,7 @@ public class TicketService {
                 .build();
         Ticket bookedTicket = ticketRepository.save(ticket);
         log.info("Ticket booked with ID: {}", bookedTicket.getBookingId());
-        return bookedTicket;
+        return new TicketResponse(bookedTicket.getBookingId());
     }
 
 }

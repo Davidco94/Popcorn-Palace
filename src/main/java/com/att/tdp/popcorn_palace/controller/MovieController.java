@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -49,15 +48,9 @@ public class MovieController {
                 .rating(movieRequest.getRating())
                 .releaseYear(movieRequest.getReleaseYear())
                 .build();
-        return movieService.updateMovie(id, movieDetails)
-                .map(movie -> {
-                    log.info("Movie with ID {} updated successfully", id);
-                    return ResponseEntity.ok(movie);
-                })
-                .orElseGet(() -> {
-                    log.warn("Movie with ID {} not found", id);
-                    return ResponseEntity.notFound().build();
-                });
+        Movie updatedMovie = movieService.updateMovie(id, movieDetails);
+        log.info("Movie with ID {} updated successfully", id);
+        return ResponseEntity.ok(updatedMovie);
     }
 
     @DeleteMapping("/{id}")
