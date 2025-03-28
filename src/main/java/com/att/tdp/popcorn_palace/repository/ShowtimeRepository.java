@@ -9,6 +9,9 @@ import java.util.List;
 
 @Repository
 public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
-    // Find showtimes in a theater that overlap with the given period
+    // Find show times in a theater that overlap with the given period
     List<Showtime> findByTheaterAndStartTimeLessThanAndEndTimeGreaterThan(String theater, LocalDateTime endTime, LocalDateTime startTime);
+
+    // Find all show times by movie ID
+    List<Showtime> findByMovieId(Long movieId);
 }
