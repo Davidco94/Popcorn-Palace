@@ -45,7 +45,7 @@ public class MovieControllerTest {
                 .title("Inception")
                 .genre("Sci-Fi")
                 .duration(148)
-                .rating("PG-13")
+                .rating(5.4)
                 .releaseYear(2010)
                 .build();
         movie.setId(1L);
@@ -54,7 +54,7 @@ public class MovieControllerTest {
                 .title("Inception")
                 .genre("Sci-Fi")
                 .duration(148)
-                .rating("PG-13")
+                .rating(3.5)
                 .releaseYear(2010)
                 .build();
 
@@ -74,7 +74,7 @@ public class MovieControllerTest {
                 .title("Inception")
                 .genre("Sci-Fi")
                 .duration(148)
-                .rating("PG-13")
+                .rating(5.5)
                 .releaseYear(2010)
                 .build();
         movie.setId(1L);
