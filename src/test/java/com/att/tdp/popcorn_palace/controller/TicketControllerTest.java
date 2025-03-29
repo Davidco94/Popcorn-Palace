@@ -1,20 +1,19 @@
 package com.att.tdp.popcorn_palace.controller;
 
 import com.att.tdp.popcorn_palace.dto.TicketRequest;
-import com.att.tdp.popcorn_palace.model.Ticket;
-import com.att.tdp.popcorn_palace.model.Showtime;
+import com.att.tdp.popcorn_palace.dto.TicketResponse;
 import com.att.tdp.popcorn_palace.service.TicketService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import static org.mockito.ArgumentMatchers.any;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -33,33 +32,24 @@ public class TicketControllerTest {
 
     @Test
     public void testBookTicket() throws Exception {
-        // Create a dummy showtime for testing
-        Showtime showtime = Showtime.builder()
-                .theater("Theater 1")
-                .startTime(LocalDateTime.now())
-                .endTime(LocalDateTime.now().plusHours(2))
-                .price(12.50)
-                .build();
-        showtime.setId(1L);
+        UUID bookingId = UUID.randomUUID();
 
         TicketRequest ticketRequest = TicketRequest.builder()
-                .showtimeId(showtime.getId())
+                .showtimeId(1L)
                 .seatNumber(5)
+                .userId(UUID.randomUUID())
                 .build();
 
-        Ticket ticket = Ticket.builder()
-                .showtime(showtime)
-                .seatNumber(ticketRequest.getSeatNumber())
+        TicketResponse response = TicketResponse.builder()
+                .bookingId(bookingId)
                 .build();
-        ticket.setId(1L);
 
-        Mockito.when(ticketService.bookTicket(any(TicketRequest.class))).thenReturn(ticket);
+        Mockito.when(ticketService.bookTicket(any(TicketRequest.class))).thenReturn(response);
 
         mockMvc.perform(post("/api/tickets")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(ticket)))
+                        .content(objectMapper.writeValueAsString(ticketRequest)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.seatNumber").value(5));
+                .andExpect(jsonPath("$.bookingId").value(bookingId.toString()));
     }
 }
