@@ -39,9 +39,9 @@ public class Showtime {
     @NotNull(message = "Price is mandatory")
     private Double price;
 
+    // Relevant for future features
     @Column(nullable = false)
     @Setter(AccessLevel.NONE)
-    //private int totalSeats;
     private final static int totalSeats = Configuration.numberOfSeats;
 
     @Column(nullable = false)
