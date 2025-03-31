@@ -27,9 +27,7 @@ public class MovieService {
         if (movieRepository.existsByTitle(movieRequest.getTitle())) {
             throw new IllegalArgumentException("Movie with this title already exists");
         }
-        if (movieRequest.getReleaseYear() <= 0) {
-            throw new IllegalArgumentException("Release Year cannot be negative number");
-        }
+        validatePositiveYearAndDuration(movieRequest.getDuration(), movieRequest.getReleaseYear());
 
         Movie movie = Movie.builder()
                 .title(movieRequest.getTitle())
@@ -53,12 +51,12 @@ public class MovieService {
         log.info("Updating movie with ID: {}", id);
         Movie movie = movieRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Movie with ID " + id + " not found"));
-        if (movieDetails.getReleaseYear() <= 0) {
-            throw new IllegalArgumentException("Release Year cannot be negative number");
-        }
+
         if (!movie.getTitle().equals(movieDetails.getTitle()) && movieRepository.existsByTitle(movieDetails.getTitle())) {
             throw new IllegalArgumentException("Another movie with this title already exists");
         }
+        validatePositiveYearAndDuration(movieDetails.getDuration(), movieDetails.getReleaseYear());
+
         validateShowtimeDurations(movie.getId(), movieDetails.getDuration());
         movie.setTitle(movieDetails.getTitle());
         movie.setGenre(movieDetails.getGenre());
@@ -87,6 +85,16 @@ public class MovieService {
                 throw new IllegalArgumentException("Cannot update this movie duration. " +
                         "Existing Showtime from " + showtime.getStartTime() + " to " + showtime.getEndTime());
             }
+        }
+    }
+
+    private void validatePositiveYearAndDuration(int duration, int releaseYear){
+        if (duration <= 0) {
+            throw new IllegalArgumentException("Duration of movie cannot be negative number");
+        }
+
+        if (releaseYear <= 0) {
+            throw new IllegalArgumentException("Release Year cannot be negative number");
         }
     }
 

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
     boolean existsByShowtimeAndSeatNumber(Showtime showtime, Integer seatNumber);
 
+    //This is another way to find out how many tickets have been sold versus the number of seats available at each show
     @Query("SELECT COUNT(t) FROM Ticket t WHERE t.showtime.id = :showtimeId")
     int countBookedSeatsByShowtime(Long showtimeId);
 
