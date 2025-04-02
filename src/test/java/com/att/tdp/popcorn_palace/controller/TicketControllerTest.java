@@ -46,7 +46,7 @@ public class TicketControllerTest {
 
         Mockito.when(ticketService.bookTicket(any(TicketRequest.class))).thenReturn(response);
 
-        mockMvc.perform(post("/api/tickets")
+        mockMvc.perform(post("/bookings")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(ticketRequest)))
                 .andExpect(status().isOk())

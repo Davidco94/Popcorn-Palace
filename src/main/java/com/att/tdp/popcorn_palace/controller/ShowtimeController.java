@@ -12,7 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/showtimes")
+@RequestMapping("/showtimes")
 @Tag(name = "Showtime")
 @Slf4j
 @RequiredArgsConstructor
@@ -28,30 +28,30 @@ public class ShowtimeController {
         return ResponseEntity.ok(savedShowtime);
     }
 
-    @PutMapping("/{id}")
+    @PostMapping("/update/{showtimeId}")
     @Operation(summary = "Update an existing showtime")
-    public ResponseEntity<ShowtimeResponse> updateShowtime(@PathVariable Long id, @Validated @RequestBody ShowtimeRequest showtimeDetails) {
-        log.info("Received request to update showtime with ID: {}", id);
-        ShowtimeResponse updatedShowtime = showtimeService.updateShowtime(id, showtimeDetails);
-        log.info("Showtime with ID {} updated successfully", id);
+    public ResponseEntity<ShowtimeResponse> updateShowtime(@PathVariable Long showtimeId, @Validated @RequestBody ShowtimeRequest showtimeDetails) {
+        log.info("Received request to update showtime with ID: {}", showtimeId);
+        ShowtimeResponse updatedShowtime = showtimeService.updateShowtime(showtimeId, showtimeDetails);
+        log.info("Showtime with ID {} updated successfully", showtimeId);
         return ResponseEntity.ok(updatedShowtime);
     }
 
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{showtimeId}")
     @Operation(summary = "Delete a showtime")
-    public ResponseEntity<String> deleteShowtime(@PathVariable Long id) {
-        log.info("Received request to delete showtime with ID: {}", id);
-        showtimeService.deleteShowtime(id);
+    public ResponseEntity<String> deleteShowtime(@PathVariable Long showtimeId) {
+        log.info("Received request to delete showtime with ID: {}", showtimeId);
+        showtimeService.deleteShowtime(showtimeId);
         return ResponseEntity.ok("Showtime deleted successfully");
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{showtimeId}")
     @Operation(summary = "Get a showtime by id")
-    public ResponseEntity<ShowtimeResponse> getShowtime(@PathVariable Long id) {
-        log.info("Received request to fetch showtime with ID: {}", id);
-        return showtimeService.getShowtime(id)
+    public ResponseEntity<ShowtimeResponse> getShowtime(@PathVariable Long showtimeId) {
+        log.info("Received request to fetch showtime with ID: {}", showtimeId);
+        return showtimeService.getShowtime(showtimeId)
                 .map(ResponseEntity::ok)
-                .orElseThrow(() -> new IllegalArgumentException("Showtime not found with id " + id));
+                .orElseThrow(() -> new IllegalArgumentException("Showtime with ID " + showtimeId  + " not found"));
     }
 }

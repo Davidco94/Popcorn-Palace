@@ -61,7 +61,7 @@ public class ShowtimeControllerTest {
 
         Mockito.when(showtimeService.addShowtime(any(ShowtimeRequest.class))).thenReturn(response);
 
-        mockMvc.perform(post("/api/showtimes")
+        mockMvc.perform(post("/showtimes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -89,7 +89,7 @@ public class ShowtimeControllerTest {
 
         Mockito.when(showtimeService.updateShowtime(eq(1L), any(ShowtimeRequest.class))).thenReturn(response);
 
-        mockMvc.perform(put("/api/showtimes/1")
+        mockMvc.perform(post("/showtimes/update/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -100,7 +100,7 @@ public class ShowtimeControllerTest {
     public void testDeleteShowtime_Success() throws Exception {
         Mockito.doNothing().when(showtimeService).deleteShowtime(1L);
 
-        mockMvc.perform(delete("/api/showtimes/1"))
+        mockMvc.perform(delete("/showtimes/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Showtime deleted successfully"));
     }
@@ -121,7 +121,7 @@ public class ShowtimeControllerTest {
 
         Mockito.when(showtimeService.getShowtime(1L)).thenReturn(Optional.of(response));
 
-        mockMvc.perform(get("/api/showtimes/1"))
+        mockMvc.perform(get("/showtimes/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.theater").value("Hall A"));
@@ -131,7 +131,7 @@ public class ShowtimeControllerTest {
     public void testGetShowtime_NotFound() throws Exception {
         Mockito.when(showtimeService.getShowtime(999L)).thenReturn(Optional.empty());
 
-        mockMvc.perform(get("/api/showtimes/999"))
+        mockMvc.perform(get("/showtimes/999"))
                 .andExpect(status().isBadRequest());
     }
 }

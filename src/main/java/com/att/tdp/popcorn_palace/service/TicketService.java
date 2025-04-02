@@ -27,7 +27,7 @@ public class TicketService {
 
         boolean seatTaken = ticketRepository.existsByShowtimeAndSeatNumber(showtime, seatNumber);
         if (seatTaken) {
-            throw new IllegalArgumentException("Seat already booked");
+            throw new IllegalArgumentException("Seat " + seatNumber + " already booked");
         }
 
         if (showtime.getAvailableSeats() <= 0) {

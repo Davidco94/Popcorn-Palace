@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.NoSuchElementException;
 import java.time.Duration;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 
 @Service
 @Slf4j
@@ -116,6 +118,9 @@ public class ShowtimeService {
 
     @Transactional
     public void deleteShowtime(Long id) {
+        if (!showtimeRepository.existsById(id)) {
+            throw new NoSuchElementException("Showtime with ID " + id + " not found");
+        }
         log.info("Deleting tickets for showtime ID: {}", id);
         ticketRepository.deleteByShowtimeId(id);
         log.info("Deleting showtime with ID: {}", id);
