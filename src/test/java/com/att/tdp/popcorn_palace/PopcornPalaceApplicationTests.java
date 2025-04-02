@@ -49,17 +49,17 @@ public class PopcornPalaceApplicationTests {
 		movie.put("releaseYear", 2023);
 
 		HttpEntity<String> movieRequest = new HttpEntity<>(objectMapper.writeValueAsString(movie), headers);
-		ResponseEntity<String> movieResponse = restTemplate.postForEntity(getUrl("/api/movies"), movieRequest, String.class);
+		ResponseEntity<String> movieResponse = restTemplate.postForEntity(getUrl("/movies"), movieRequest, String.class);
 		assertThat(movieResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 		// --- Get All Movies ---
-		ResponseEntity<String> getMovies = restTemplate.getForEntity(getUrl("/api/movies"), String.class);
+		ResponseEntity<String> getMovies = restTemplate.getForEntity(getUrl("/movies/all"), String.class);
 		assertThat(getMovies.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 		// --- Update Movie ---
 		movie.put("rating", 8.5);
 		HttpEntity<String> updateMovieRequest = new HttpEntity<>(objectMapper.writeValueAsString(movie), headers);
-		ResponseEntity<String> updateMovieResponse = restTemplate.exchange(getUrl("/api/movies/1"), HttpMethod.PUT, updateMovieRequest, String.class);
+		ResponseEntity<String> updateMovieResponse = restTemplate.postForEntity(getUrl("/movies/update/Flow Test Movie"), updateMovieRequest, String.class);
 		assertThat(updateMovieResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 		// --- Add Showtime ---
@@ -71,17 +71,17 @@ public class PopcornPalaceApplicationTests {
 		showtime.put("endTime", LocalDateTime.now().plusDays(1).plusHours(2).toString());
 
 		HttpEntity<String> showtimeRequest = new HttpEntity<>(objectMapper.writeValueAsString(showtime), headers);
-		ResponseEntity<String> showtimeResponse = restTemplate.postForEntity(getUrl("/api/showtimes"), showtimeRequest, String.class);
+		ResponseEntity<String> showtimeResponse = restTemplate.postForEntity(getUrl("/showtimes"), showtimeRequest, String.class);
 		assertThat(showtimeResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 		// --- Get Showtime ---
-		ResponseEntity<String> getShowtime = restTemplate.getForEntity(getUrl("/api/showtimes/1"), String.class);
+		ResponseEntity<String> getShowtime = restTemplate.getForEntity(getUrl("/showtimes/1"), String.class);
 		assertThat(getShowtime.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 		// --- Update Showtime ---
 		showtime.put("price", 30.0);
 		HttpEntity<String> updateShowtimeRequest = new HttpEntity<>(objectMapper.writeValueAsString(showtime), headers);
-		ResponseEntity<String> updateShowtimeResponse = restTemplate.exchange(getUrl("/api/showtimes/1"), HttpMethod.PUT, updateShowtimeRequest, String.class);
+		ResponseEntity<String> updateShowtimeResponse = restTemplate.postForEntity(getUrl("/showtimes/update/1"), updateShowtimeRequest, String.class);
 		assertThat(updateShowtimeResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 		// --- Book Ticket ---
@@ -91,15 +91,15 @@ public class PopcornPalaceApplicationTests {
 		ticket.put("userId", UUID.randomUUID().toString());
 
 		HttpEntity<String> ticketRequest = new HttpEntity<>(objectMapper.writeValueAsString(ticket), headers);
-		ResponseEntity<String> ticketResponse = restTemplate.postForEntity(getUrl("/api/tickets"), ticketRequest, String.class);
+		ResponseEntity<String> ticketResponse = restTemplate.postForEntity(getUrl("/bookings"), ticketRequest, String.class);
 		assertThat(ticketResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 		// --- Delete Showtime ---
-		ResponseEntity<Void> deleteShowtime = restTemplate.exchange(getUrl("/api/showtimes/1"), HttpMethod.DELETE, null, Void.class);
+		ResponseEntity<Void> deleteShowtime = restTemplate.exchange(getUrl("/showtimes/1"), HttpMethod.DELETE, null, Void.class);
 		assertThat(deleteShowtime.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 		// --- Delete Movie ---
-		ResponseEntity<Void> deleteMovie = restTemplate.exchange(getUrl("/api/movies/1"), HttpMethod.DELETE, null, Void.class);
+		ResponseEntity<Void> deleteMovie = restTemplate.exchange(getUrl("/movies/Flow Test Movie"), HttpMethod.DELETE, null, Void.class);
 		assertThat(deleteMovie.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
 }

@@ -61,7 +61,7 @@ public class MovieControllerTest {
 
         Mockito.when(movieService.addMovie(any(MovieRequest.class))).thenReturn(response);
 
-        mockMvc.perform(post("/api/movies")
+        mockMvc.perform(post("/movies")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -72,17 +72,17 @@ public class MovieControllerTest {
     public void testGetAllMovies_EmptyList() throws Exception {
         Mockito.when(movieService.getAllMovies()).thenReturn(Collections.emptyList());
 
-        mockMvc.perform(get("/api/movies"))
+        mockMvc.perform(get("/movies/all"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(0));
     }
 
     @Test
-    public void testUpdateMovie_Success() throws Exception {
+    public void testUpdateMovieByTitle_Success() throws Exception {
         MovieRequest request = MovieRequest.builder()
                 .title("Inception")
                 .genre("Sci-Fi")
-                .duration(148)
+                .duration(150)
                 .rating(9.0)
                 .releaseYear(2010)
                 .build();
@@ -91,14 +91,15 @@ public class MovieControllerTest {
                 .id(1L)
                 .title("Inception")
                 .genre("Sci-Fi")
-                .duration(148)
+                .duration(150)
                 .rating(9.0)
                 .releaseYear(2010)
                 .build();
 
+        Mockito.when(movieService.getIdByTitle("Inception")).thenReturn(1L);
         Mockito.when(movieService.updateMovie(eq(1L), any(Movie.class))).thenReturn(response);
 
-        mockMvc.perform(put("/api/movies/1")
+        mockMvc.perform(post("/movies/update/Inception")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -106,10 +107,11 @@ public class MovieControllerTest {
     }
 
     @Test
-    public void testDeleteMovie_Success() throws Exception {
+    public void testDeleteMovieByTitle() throws Exception {
+        Mockito.when(movieService.getIdByTitle("Inception")).thenReturn(1L);
         Mockito.doNothing().when(movieService).deleteMovie(1L);
 
-        mockMvc.perform(delete("/api/movies/1"))
+        mockMvc.perform(delete("/movies/Inception"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Movie deleted successfully"));
     }

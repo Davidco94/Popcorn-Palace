@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
@@ -24,6 +25,8 @@ public class Movie {
     private String title;
 
     private String genre;
+
+    @NotNull(message = "Duration is mandatory")
     private int duration;
     private Double rating;
     private int releaseYear;

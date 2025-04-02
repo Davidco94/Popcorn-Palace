@@ -47,6 +47,8 @@ public class MovieService {
         return movieRepository.findAll();
     }
 
+
+
     public Movie updateMovie(Long id, Movie movieDetails) {
         log.info("Updating movie with ID: {}", id);
         Movie movie = movieRepository.findById(id)
@@ -67,6 +69,15 @@ public class MovieService {
         log.info("Movie updated: {}", updatedMovie.getTitle());
         return updatedMovie;
     }
+
+    public Long getIdByTitle(String title) {
+        return movieRepository.findByTitle(title)
+                .map(Movie::getId)
+                .orElseThrow(() ->
+                        new NoSuchElementException("Movie with title '" + title + "' not found")
+                );
+    }
+
 
     public void deleteMovie(Long id) {
         log.info("Deleting movie with ID: {}", id);
