@@ -28,7 +28,7 @@ Run the main class to start the application from:
 Once running, access the API documentation via Swagger:
 [http://localhost:8080/swagger-ui/index.html#/](http://localhost:8080/swagger-ui/index.html#/)
 
-![img.png](img.png)
+![SwaggerUI.png](SwaggerUI.png)
 
 ---
 
