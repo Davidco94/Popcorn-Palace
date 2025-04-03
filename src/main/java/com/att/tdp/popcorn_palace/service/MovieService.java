@@ -49,7 +49,7 @@ public class MovieService {
 
 
 
-    public Movie updateMovie(Long id, Movie movieDetails) {
+    public Movie updateMovie(Long id, MovieRequest movieDetails) {
         log.info("Updating movie with ID: {}", id);
         Movie movie = movieRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Movie with ID " + id + " not found"));
@@ -99,13 +99,13 @@ public class MovieService {
         }
     }
 
-    private void validatePositiveYearAndDuration(int duration, int releaseYear){
-        if (duration <= 0) {
-            throw new IllegalArgumentException("Duration of movie cannot be negative number");
+    private void validatePositiveYearAndDuration(Integer duration, Integer releaseYear){
+        if (duration == null || duration <= 0) {
+            throw new IllegalArgumentException("Duration is required and must be greater than 0");
         }
 
-        if (releaseYear <= 0) {
-            throw new IllegalArgumentException("Release Year cannot be negative number");
+        if (releaseYear == null || releaseYear <= 1900) {
+            throw new IllegalArgumentException("Release Year is required and must be greater than 1900");
         }
     }
 

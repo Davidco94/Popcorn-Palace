@@ -97,7 +97,7 @@ public class MovieControllerTest {
                 .build();
 
         Mockito.when(movieService.getIdByTitle("Inception")).thenReturn(1L);
-        Mockito.when(movieService.updateMovie(eq(1L), any(Movie.class))).thenReturn(response);
+        Mockito.when(movieService.updateMovie(eq(1L), any(MovieRequest.class))).thenReturn(response);
 
         mockMvc.perform(post("/movies/update/Inception")
                         .contentType(MediaType.APPLICATION_JSON)
