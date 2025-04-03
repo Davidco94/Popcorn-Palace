@@ -48,7 +48,7 @@ class MovieServiceTest {
                 .releaseYear(2022)
                 .build();
 
-        Movie updated = Movie.builder()
+        MovieRequest updatedRequest = MovieRequest.builder()
                 .title("New Title")
                 .genre("Drama")
                 .duration(90)
@@ -60,7 +60,7 @@ class MovieServiceTest {
         when(movieRepository.save(movie)).thenReturn(movie);
         when(showtimeRepository.findByMovieId(1L)).thenReturn(Collections.emptyList());
 
-        Movie result = movieService.updateMovie(1L, updated);
+        Movie result = movieService.updateMovie(1L, updatedRequest);
 
         assertNotNull(result);
         assertEquals("New Title", result.getTitle());
@@ -123,7 +123,7 @@ class MovieServiceTest {
                 .releaseYear(2022)
                 .build();
 
-        Movie updated = Movie.builder()
+        MovieRequest updatedRequest = MovieRequest.builder()
                 .title("Test")
                 .genre("Drama")
                 .duration(150)
@@ -142,7 +142,7 @@ class MovieServiceTest {
         when(showtimeRepository.findByMovieId(1L)).thenReturn(List.of(showtime));
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            movieService.updateMovie(1L, updated);
+            movieService.updateMovie(1L, updatedRequest);
         });
 
         assertTrue(exception.getMessage().contains("Cannot update this movie duration"));

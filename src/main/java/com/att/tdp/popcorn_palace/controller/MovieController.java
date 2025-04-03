@@ -18,6 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/movies")
 @Tag(name = "Movies")
+@Validated
 @Slf4j
 @RequiredArgsConstructor
 public class MovieController {
@@ -42,19 +43,10 @@ public class MovieController {
 
     @PostMapping("/update/{movieTitle}")
     @Operation(summary = "Update an existing movie by title")
-    public ResponseEntity<Movie> updateMovieByTitle(@PathVariable String movieTitle, @Validated @RequestBody MovieRequest movieRequest) {
+    public ResponseEntity<Movie> updateMovieByTitle(@PathVariable String movieTitle, @Valid @RequestBody MovieRequest movieRequest) {
         log.info("Received request to update movie with title: {}", movieTitle);
         Long id = movieService.getIdByTitle(movieTitle);
-
-        Movie movieDetails = Movie.builder()
-                .title(movieRequest.getTitle())
-                .genre(movieRequest.getGenre())
-                .duration(movieRequest.getDuration())
-                .rating(movieRequest.getRating())
-                .releaseYear(movieRequest.getReleaseYear())
-                .build();
-
-        Movie updatedMovie = movieService.updateMovie(id, movieDetails);
+        Movie updatedMovie = movieService.updateMovie(id, movieRequest);
         log.info("Movie with ID {} updated successfully", id);
         return ResponseEntity.ok(updatedMovie);
     }
