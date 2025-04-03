@@ -23,7 +23,9 @@ public class MovieService {
 
     public Movie addMovie(MovieRequest movieRequest) {
         log.info("Adding new movie: {}", movieRequest.getTitle());
-
+        if (movieRequest.getTitle() == null || movieRequest.getTitle().trim().isEmpty()) {
+            throw new IllegalArgumentException("Title cannot be blank");
+        }
         if (movieRepository.existsByTitle(movieRequest.getTitle())) {
             throw new IllegalArgumentException("Movie with this title already exists");
         }
